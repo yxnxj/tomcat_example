@@ -15,9 +15,13 @@ public class Rq {
         this.resp = resp;
     }
 
-    public void encoding() throws UnsupportedEncodingException {
+    public void encoding() {
         // 들어오는 파라미터를 UTF-8로 해석
-        req.setCharacterEncoding("UTF-8");
+        try {
+            req.setCharacterEncoding("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         // 서블릿이 HTML 파일을 만들 때 UTF-8 로 쓰기
         resp.setCharacterEncoding("UTF-8");
         // HTML이 UTF-8 형식이라는 것을 브라우저에게 알린다.
@@ -28,10 +32,18 @@ public class Rq {
         if(param == null)
             return defaultValue;
 
-        return Integer.parseInt(param);
+        try{
+            return Integer.parseInt(param);
+        }catch(NumberFormatException e){
+            return defaultValue;
+        }
     }
 
-    public void appendBody(String formatted) throws IOException {
-        resp.getWriter().append(formatted);
+    public void appendBody(String formatted)  {
+        try {
+            resp.getWriter().append(formatted);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
